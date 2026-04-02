@@ -7,6 +7,25 @@ document.addEventListener('DOMContentLoaded', () => {
     initScoreForm();
     initSchedule();
     initAdmin();
+    
+    // Secret admin access via /admin path or session flag
+    const isAdminMode = window.location.pathname.includes('admin') || 
+                        sessionStorage.getItem('slh-admin') === 'true' ||
+                        window.location.hash === '#admin-redirect';
+    
+    if (isAdminMode) {
+        // Clear the flag so refresh goes back to normal (unless on /admin path)
+        if (window.location.hash === '#admin-redirect') {
+            sessionStorage.removeItem('slh-admin');
+            history.replaceState(null, '', window.location.pathname);
+        }
+        
+        const adminBtn = document.getElementById('admin-nav-btn');
+        if (adminBtn) {
+            adminBtn.style.display = 'inline-flex';
+            adminBtn.click(); // Auto-show admin view
+        }
+    }
 });
 
 // ==================== Navigation ====================

@@ -3,29 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Summer Long Hazel</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Admin - The Summer Long Hazel</title>
+    <link rel="stylesheet" href="../styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
         <div class="header-top">
-            <img src="slh-logo.svg" alt="Summer Long Hazel" class="tournament-logo">
+            <img src="../slh-logo.svg" alt="Summer Long Hazel" class="tournament-logo">
         </div>
         <p class="tagline">"Who playin?" — Hazel Brown</p>
         <nav>
-            <button class="nav-btn active" data-view="leaderboard">Leaderboard</button>
+            <button class="nav-btn" data-view="leaderboard">Leaderboard</button>
             <button class="nav-btn" data-view="payment">Pay Entry</button>
             <button class="nav-btn" data-view="submit">Submit Score</button>
             <button class="nav-btn" data-view="schedule">Schedule</button>
-            <button class="nav-btn" data-view="admin" id="admin-nav-btn" style="display:none;">Admin</button>
+            <button class="nav-btn active" data-view="admin" id="admin-nav-btn">Admin</button>
         </nav>
     </header>
 
     <main>
         <!-- Leaderboard View -->
-        <section id="leaderboard" class="view active">
+        <section id="leaderboard" class="view">
             <div class="flight-tabs">
                 <button class="flight-tab active" data-flight="all">All Flights</button>
                 <button class="flight-tab" data-flight="titleist">Titleist</button>
@@ -172,7 +172,7 @@
         </section>
 
         <!-- Admin View -->
-        <section id="admin" class="view">
+        <section id="admin" class="view active">
             <h2>👨‍💼 Admin Dashboard</h2>
             <div class="admin-password" id="admin-login">
                 <input type="password" id="admin-pass" placeholder="Enter admin password">
@@ -221,7 +221,7 @@
         <p>Built with ⛳ by Jenkins AI</p>
     </footer>
 
-    <script src="data.js"></script>
-    <script src="app.js"></script>
+    <script src="../data.js"></script>
+    <script src="../app.js"></script>
 </body>
 </html>
