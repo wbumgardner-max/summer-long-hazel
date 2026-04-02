@@ -58,6 +58,45 @@ function initLeaderboard() {
     });
     
     renderLeaderboard('all');
+    updatePurseCounter();
+}
+
+function updatePurseCounter() {
+    const teamCount = TOURNAMENT_DATA.teams.length;
+    const totalPurse = teamCount * 1000; // $1000 per team ($500/person)
+    
+    const purseEl = document.getElementById('total-purse');
+    const teamCountEl = document.getElementById('purse-team-count');
+    
+    if (purseEl) {
+        // Animate the counter
+        animateValue(purseEl, 0, totalPurse, 1500);
+    }
+    if (teamCountEl) {
+        teamCountEl.textContent = teamCount;
+    }
+}
+
+function animateValue(el, start, end, duration) {
+    const startTime = performance.now();
+    const format = (val) => '$' + val.toLocaleString();
+    
+    function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Easing function (ease-out)
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        const current = Math.floor(start + (end - start) * easeOut);
+        
+        el.textContent = format(current);
+        
+        if (progress < 1) {
+            requestAnimationFrame(update);
+        }
+    }
+    
+    requestAnimationFrame(update);
 }
 
 function renderLeaderboard(flight) {

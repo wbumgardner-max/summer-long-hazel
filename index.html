@@ -16,9 +16,10 @@
         <p class="tagline">"Who playin?" — Hazel Brown</p>
         <nav>
             <button class="nav-btn active" data-view="leaderboard">Leaderboard</button>
-            <button class="nav-btn" data-view="payment">Pay Entry</button>
             <button class="nav-btn" data-view="submit">Submit Score</button>
             <button class="nav-btn" data-view="schedule">Schedule</button>
+            <button class="nav-btn" data-view="payment">Pay Entry</button>
+            <button class="nav-btn" data-view="format">Format</button>
             <button class="nav-btn" data-view="admin" id="admin-nav-btn" style="display:none;">Admin</button>
         </nav>
     </header>
@@ -26,6 +27,18 @@
     <main>
         <!-- Leaderboard View -->
         <section id="leaderboard" class="view active">
+            <!-- Purse Counter -->
+            <div class="purse-counter">
+                <div class="purse-icon">💰</div>
+                <div class="purse-content">
+                    <span class="purse-label">Total Purse</span>
+                    <span class="purse-amount" id="total-purse">$0</span>
+                </div>
+                <div class="purse-teams">
+                    <span id="purse-team-count">0</span> teams
+                </div>
+            </div>
+            
             <div class="flight-tabs">
                 <button class="flight-tab active" data-flight="all">All Flights</button>
                 <button class="flight-tab" data-flight="titleist">Titleist</button>
@@ -168,6 +181,65 @@
             </div>
             <div class="schedule-container" id="schedule-container">
                 <!-- Populated by JS -->
+            </div>
+        </section>
+
+        <!-- Format View -->
+        <section id="format" class="view">
+            <div class="format-container">
+                <h2>⛳ Tournament Format</h2>
+                
+                <div class="format-section">
+                    <h3>🎯 The Game</h3>
+                    <p><strong>Two-man team best ball match play.</strong></p>
+                    <ul>
+                        <li>Each match spans 18 holes</li>
+                        <li>20 points up for grabs per match (1 per hole + 2 bonus for overall winner)</li>
+                        <li>All matches are NET — handicaps determined by GHIN on day of match</li>
+                        <li>Play from the blue tees unless all agree otherwise</li>
+                    </ul>
+                </div>
+
+                <div class="format-section">
+                    <h3>💵 Buy-In & Prizes</h3>
+                    <ul>
+                        <li><strong>$500 per person</strong> ($1,000 per team)</li>
+                        <li>1st and 2nd place teams in each flight share the pot</li>
+                        <li>Flight winners advance to playoffs</li>
+                        <li><strong>Last place penalty:</strong> Bottom team in each flight pays extra $250 — goes to semi-final winners</li>
+                    </ul>
+                </div>
+
+                <div class="format-section">
+                    <h3>📅 Season</h3>
+                    <ul>
+                        <li><strong>Start:</strong> April 15, 2026</li>
+                        <li><strong>End:</strong> Labor Day (September 7, 2026)</li>
+                        <li>4+ months to play every team in your flight</li>
+                        <li>Play in any order — just get them done!</li>
+                        <li>Incomplete matches = automatic tie (10 points each)</li>
+                    </ul>
+                </div>
+
+                <div class="format-section">
+                    <h3>🏆 Flights & Playoffs</h3>
+                    <ul>
+                        <li>4 flights (6-8 teams each)</li>
+                        <li>Flights determined by the "Committee" — grouped by who plays together</li>
+                        <li>Top 2 teams per flight advance to playoffs</li>
+                        <li>Semi-finals after Labor Day (or when all matches complete)</li>
+                    </ul>
+                </div>
+
+                <div class="format-section">
+                    <h3>📱 Reporting Results</h3>
+                    <p>After each match, submit your score through this app or text/email Lee. Weekly standings updates will be sent out.</p>
+                </div>
+
+                <div class="format-quote">
+                    <p>"Who playin?"</p>
+                    <span class="quote-author">— Hazel Brown</span>
+                </div>
             </div>
         </section>
 

@@ -507,6 +507,35 @@ footer p {
 
 /* Small phones */
 @media (max-width: 420px) {
+    .purse-counter {
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 1rem;
+    }
+    
+    .purse-icon {
+        font-size: 2rem;
+    }
+    
+    .purse-amount {
+        font-size: 2rem;
+    }
+    
+    .purse-teams {
+        border-left: none;
+        border-top: 1px solid rgba(255,255,255,0.3);
+        padding-left: 0;
+        padding-top: 0.75rem;
+    }
+    
+    .format-section {
+        padding: 1rem;
+    }
+    
+    .format-quote p {
+        font-size: 1.4rem;
+    }
+
     header {
         padding: 1rem;
     }
@@ -847,6 +876,131 @@ footer p {
 .payment-toggle button.unpaid-btn.active {
     background: #ffc107;
     color: #333;
+}
+
+/* Purse Counter */
+.purse-counter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+    color: white;
+    padding: 1.25rem 2rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 15px rgba(35, 64, 40, 0.3);
+}
+
+.purse-icon {
+    font-size: 2.5rem;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.purse-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.purse-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.9;
+}
+
+.purse-amount {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.purse-teams {
+    font-size: 1rem;
+    opacity: 0.9;
+    padding-left: 1rem;
+    border-left: 2px solid rgba(255,255,255,0.3);
+}
+
+.purse-teams span {
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+/* Format Page */
+.format-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.format-container h2 {
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+}
+
+.format-section {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.format-section h3 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.format-section p {
+    margin-bottom: 0.75rem;
+    line-height: 1.6;
+}
+
+.format-section ul {
+    margin: 0;
+    padding-left: 1.5rem;
+}
+
+.format-section li {
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+}
+
+.format-section li strong {
+    color: var(--primary);
+}
+
+.format-quote {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.format-quote p {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-style: italic;
+    margin-bottom: 0.5rem;
+}
+
+.format-quote .quote-author {
+    opacity: 0.9;
+    font-size: 1rem;
 }
 
 /* Toast Notifications */
