@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Summer Long Hazel</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>🏌️ The Summer Long Hazel</h1>
+            <p class="tagline">"Who playin?" — Hazel Brown</p>
+        </div>
+        <nav>
+            <button class="nav-btn active" data-view="leaderboard">Leaderboard</button>
+            <button class="nav-btn" data-view="payment">Pay Entry</button>
+            <button class="nav-btn" data-view="submit">Submit Score</button>
+            <button class="nav-btn" data-view="schedule">Schedule</button>
+            <button class="nav-btn" data-view="admin">Admin</button>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Leaderboard View -->
+        <section id="leaderboard" class="view active">
+            <div class="flight-tabs">
+                <button class="flight-tab active" data-flight="all">All Flights</button>
+                <button class="flight-tab" data-flight="titleist">Titleist</button>
+                <button class="flight-tab" data-flight="ping">Ping</button>
+                <button class="flight-tab" data-flight="taylormade">TaylorMade</button>
+                <button class="flight-tab" data-flight="callaway">Callaway</button>
+            </div>
+            <div class="leaderboard-container">
+                <table class="leaderboard">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Team</th>
+                            <th>Flight</th>
+                            <th>W-L-T</th>
+                            <th>Points</th>
+                            <th>Matches</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Payment View -->
+        <section id="payment" class="view">
+            <div class="payment-container">
+                <div class="payment-header">
+                    <h2>💳 Pay Your Entry Fee</h2>
+                    <p class="payment-amount">$500 per person / $1,000 per team</p>
+                </div>
+                
+                <div class="venmo-card">
+                    <div class="venmo-info">
+                        <img src="https://cdn.worldvectorlogo.com/logos/venmo-2.svg" alt="Venmo" class="venmo-logo">
+                        <div class="venmo-details">
+                            <p class="venmo-label">Send payment to:</p>
+                            <p class="venmo-username" id="venmo-username">@SummerLongHazel</p>
+                            <p class="venmo-note">Include your team name in the note!</p>
+                        </div>
+                    </div>
+                    <a href="#" id="venmo-link" class="venmo-btn" target="_blank">
+                        Open Venmo
+                    </a>
+                </div>
+
+                <div class="payment-status-section">
+                    <h3>📋 Payment Status</h3>
+                    <div class="payment-stats">
+                        <div class="stat-card">
+                            <span class="stat-value" id="teams-paid">0</span>
+                            <span class="stat-label">Teams Paid</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-value" id="total-collected">$0</span>
+                            <span class="stat-label">Collected</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-value" id="total-expected">$15,000</span>
+                            <span class="stat-label">Expected</span>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-list" id="payment-list">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Submit Score View -->
+        <section id="submit" class="view">
+            <div class="form-container">
+                <h2>📝 Submit Match Result</h2>
+                <form id="score-form">
+                    <div class="form-group">
+                        <label for="match-date">Match Date</label>
+                        <input type="date" id="match-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="team1">Your Team</label>
+                        <select id="team1" required>
+                            <option value="">Select your team...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="team2">Opponent Team</label>
+                        <select id="team2" required>
+                            <option value="">Select opponent...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="course">Course</label>
+                        <input type="text" id="course" placeholder="e.g., Quail Hollow" required>
+                    </div>
+                    
+                    <h3>Hole-by-Hole Results</h3>
+                    <p class="helper-text">Enter winner for each hole (1 = Your Team, 2 = Opponent, 0 = Tie)</p>
+                    <div class="holes-grid" id="holes-grid">
+                        <!-- Front 9 -->
+                        <div class="nine-holes">
+                            <h4>Front 9</h4>
+                            <div class="hole-inputs">
+                                <!-- Generated by JS -->
+                            </div>
+                        </div>
+                        <!-- Back 9 -->
+                        <div class="nine-holes">
+                            <h4>Back 9</h4>
+                            <div class="hole-inputs">
+                                <!-- Generated by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="score-summary">
+                        <div class="summary-item">
+                            <span class="label">Your Team Points:</span>
+                            <span id="team1-points" class="value">0</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Opponent Points:</span>
+                            <span id="team2-points" class="value">0</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Match Winner:</span>
+                            <span id="match-winner" class="value">—</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Submit Match Result</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Schedule View -->
+        <section id="schedule" class="view">
+            <h2>📅 Match Schedule</h2>
+            <div class="schedule-filters">
+                <select id="schedule-flight">
+                    <option value="all">All Flights</option>
+                    <option value="titleist">Titleist</option>
+                    <option value="ping">Ping</option>
+                    <option value="taylormade">TaylorMade</option>
+                    <option value="callaway">Callaway</option>
+                </select>
+                <select id="schedule-status">
+                    <option value="all">All Matches</option>
+                    <option value="pending">Pending</option>
+                    <option value="completed">Completed</option>
+                </select>
+            </div>
+            <div class="schedule-container" id="schedule-container">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+
+        <!-- Admin View -->
+        <section id="admin" class="view">
+            <h2>👨‍💼 Admin Dashboard</h2>
+            <div class="admin-password" id="admin-login">
+                <input type="password" id="admin-pass" placeholder="Enter admin password">
+                <button onclick="checkAdminPassword()">Login</button>
+            </div>
+            <div class="admin-content" id="admin-content" style="display:none;">
+                <div class="admin-section">
+                    <h3>💳 Payment Management</h3>
+                    <div class="admin-setting">
+                        <label>Venmo Username:</label>
+                        <input type="text" id="admin-venmo-username" placeholder="@SummerLongHazel" onchange="updateVenmoUsername(this.value)">
+                    </div>
+                    <div id="payment-management">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                <div class="admin-section">
+                    <h3>Assign Teams to Flights</h3>
+                    <div id="flight-assignment">
+                        <!-- Populated by JS -->
+                    </div>
+                    <button onclick="saveFlightAssignments()" class="admin-btn">Save Flight Assignments</button>
+                </div>
+                <div class="admin-section">
+                    <h3>Pending Score Submissions</h3>
+                    <div id="pending-scores">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                <div class="admin-section">
+                    <h3>Generate Weekly Update</h3>
+                    <button onclick="generateWeeklyUpdate()" class="admin-btn">Generate Email</button>
+                    <div id="weekly-update-output"></div>
+                </div>
+                <div class="admin-section">
+                    <h3>Export Data</h3>
+                    <button onclick="exportData('csv')" class="admin-btn">Export CSV</button>
+                    <button onclick="exportData('json')" class="admin-btn">Export JSON</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Season: April 15 — Labor Day 2026 | $500/person buy-in</p>
+        <p>Built with ⛳ by Jenkins AI</p>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
