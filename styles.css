@@ -743,3 +743,83 @@ footer p {
         opacity: 1;
     }
 }
+
+/* Points Entry Form (Simplified) */
+.points-entry {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin: 2rem 0;
+    padding: 2rem;
+    background: var(--bg);
+    border-radius: 12px;
+}
+
+.points-group {
+    text-align: center;
+}
+
+.points-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+}
+
+.points-group input {
+    width: 100px;
+    padding: 1rem;
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    border: 3px solid var(--border);
+    border-radius: 12px;
+    transition: border-color 0.2s;
+}
+
+.points-group input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.points-divider {
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--text-light);
+}
+
+.points-total {
+    text-align: center;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: var(--bg);
+    border-radius: 8px;
+}
+
+.points-total.valid {
+    background: #d4edda;
+    color: #155724;
+}
+
+.points-total.invalid {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.winner-display {
+    text-align: center;
+    padding: 1rem;
+}
+
+.winner-display .value {
+    color: var(--primary);
+}
+
+.submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}

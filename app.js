@@ -184,13 +184,64 @@ function setPaymentStatus(teamId, paid) {
 // ==================== Score Submission ====================
 function initScoreForm() {
     populateTeamSelects();
-    generateHoleInputs();
     
     const form = document.getElementById('score-form');
     form.addEventListener('submit', handleScoreSubmit);
     
     // Set default date to today
     document.getElementById('match-date').valueAsDate = new Date();
+    
+    // Add listeners for points inputs
+    const team1Input = document.getElementById('team1-points-input');
+    const team2Input = document.getElementById('team2-points-input');
+    
+    team1Input.addEventListener('input', validateAndPreviewResult);
+    team2Input.addEventListener('input', validateAndPreviewResult);
+}
+
+function validateAndPreviewResult() {
+    const team1Points = parseFloat(document.getElementById('team1-points-input').value) || 0;
+    const team2Points = parseFloat(document.getElementById('team2-points-input').value) || 0;
+    const total = team1Points + team2Points;
+    
+    const totalDisplay = document.getElementById('total-display');
+    const pointsTotal = document.getElementById('points-total');
+    const submitBtn = document.getElementById('submit-btn');
+    const resultPreview = document.getElementById('match-result-preview');
+    const matchWinner = document.getElementById('match-winner');
+    
+    totalDisplay.textContent = total;
+    
+    // Validate total equals 20
+    if (total === 20) {
+        pointsTotal.classList.add('valid');
+        pointsTotal.classList.remove('invalid');
+        submitBtn.disabled = false;
+        resultPreview.style.display = 'block';
+        
+        // Determine winner
+        const team1Select = document.getElementById('team1');
+        const team2Select = document.getElementById('team2');
+        const team1Name = team1Select.options[team1Select.selectedIndex]?.text || 'Your Team';
+        const team2Name = team2Select.options[team2Select.selectedIndex]?.text || 'Opponent';
+        
+        if (team1Points > team2Points) {
+            matchWinner.textContent = team1Name + ' wins!';
+        } else if (team2Points > team1Points) {
+            matchWinner.textContent = team2Name + ' wins!';
+        } else {
+            matchWinner.textContent = 'Match tied!';
+        }
+    } else if (total > 0) {
+        pointsTotal.classList.add('invalid');
+        pointsTotal.classList.remove('valid');
+        submitBtn.disabled = true;
+        resultPreview.style.display = 'none';
+    } else {
+        pointsTotal.classList.remove('valid', 'invalid');
+        submitBtn.disabled = true;
+        resultPreview.style.display = 'none';
+    }
 }
 
 function populateTeamSelects() {
@@ -215,92 +266,7 @@ function populateTeamSelects() {
     });
 }
 
-function generateHoleInputs() {
-    const front9 = document.querySelector('.nine-holes:first-child .hole-inputs');
-    const back9 = document.querySelector('.nine-holes:last-child .hole-inputs');
-    
-    for (let i = 1; i <= 9; i++) {
-        front9.innerHTML += `
-            <div class="hole-input">
-                <label>Hole ${i}</label>
-                <select id="hole-${i}" onchange="updateHoleStyle(this); calculateScore()">
-                    <option value="">-</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="0">T</option>
-                </select>
-            </div>
-        `;
-    }
-    
-    for (let i = 10; i <= 18; i++) {
-        back9.innerHTML += `
-            <div class="hole-input">
-                <label>Hole ${i}</label>
-                <select id="hole-${i}" onchange="updateHoleStyle(this); calculateScore()">
-                    <option value="">-</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="0">T</option>
-                </select>
-            </div>
-        `;
-    }
-}
-
-function updateHoleStyle(select) {
-    select.classList.remove('team1-win', 'team2-win', 'tie');
-    if (select.value === '1') select.classList.add('team1-win');
-    else if (select.value === '2') select.classList.add('team2-win');
-    else if (select.value === '0') select.classList.add('tie');
-}
-
-function calculateScore() {
-    let team1Points = 0;
-    let team2Points = 0;
-    let holesPlayed = 0;
-    
-    for (let i = 1; i <= 18; i++) {
-        const val = document.getElementById(`hole-${i}`).value;
-        if (val === '1') {
-            team1Points++;
-            holesPlayed++;
-        } else if (val === '2') {
-            team2Points++;
-            holesPlayed++;
-        } else if (val === '0') {
-            // Tie - both get half point (displayed as 0.5 but stored differently)
-            team1Points += 0.5;
-            team2Points += 0.5;
-            holesPlayed++;
-        }
-    }
-    
-    // Add 2 bonus points for match winner
-    if (holesPlayed === 18) {
-        if (team1Points > team2Points) team1Points += 2;
-        else if (team2Points > team1Points) team2Points += 2;
-        // If tied, each gets 1 bonus point
-        else { team1Points += 1; team2Points += 1; }
-    }
-    
-    document.getElementById('team1-points').textContent = team1Points;
-    document.getElementById('team2-points').textContent = team2Points;
-    
-    let winner = '—';
-    if (holesPlayed === 18) {
-        if (team1Points > team2Points) {
-            const team1Name = document.getElementById('team1');
-            winner = team1Name.options[team1Name.selectedIndex]?.text || 'Your Team';
-        } else if (team2Points > team1Points) {
-            const team2Name = document.getElementById('team2');
-            winner = team2Name.options[team2Name.selectedIndex]?.text || 'Opponent';
-        } else {
-            winner = 'TIE';
-        }
-    }
-    document.getElementById('match-winner').textContent = winner;
-}
+// Hole-by-hole entry removed - using simplified points entry
 
 function handleScoreSubmit(e) {
     e.preventDefault();
@@ -308,45 +274,28 @@ function handleScoreSubmit(e) {
     const team1Id = parseInt(document.getElementById('team1').value);
     const team2Id = parseInt(document.getElementById('team2').value);
     const date = document.getElementById('match-date').value;
-    const course = document.getElementById('course').value;
     
     if (!team1Id || !team2Id) {
         showToast('Please select both teams', 'error');
         return;
     }
     
-    // Collect hole results
-    const holes = [];
-    for (let i = 1; i <= 18; i++) {
-        const val = document.getElementById(`hole-${i}`).value;
-        if (val === '') {
-            showToast(`Please enter result for hole ${i}`, 'error');
-            return;
-        }
-        holes.push(parseInt(val));
+    // Get points from simplified entry
+    const team1Points = parseFloat(document.getElementById('team1-points-input').value) || 0;
+    const team2Points = parseFloat(document.getElementById('team2-points-input').value) || 0;
+    
+    // Validate points total 20
+    if (team1Points + team2Points !== 20) {
+        showToast('Points must total 20', 'error');
+        return;
     }
-    
-    // Calculate points
-    let team1Points = 0;
-    let team2Points = 0;
-    holes.forEach(h => {
-        if (h === 1) team1Points++;
-        else if (h === 2) team2Points++;
-        else { team1Points += 0.5; team2Points += 0.5; }
-    });
-    
-    // Bonus points
-    if (team1Points > team2Points) team1Points += 2;
-    else if (team2Points > team1Points) team2Points += 2;
-    else { team1Points += 1; team2Points += 1; }
     
     const match = {
         id: Date.now(),
         date,
         team1Id,
         team2Id,
-        course,
-        holes,
+        course: 'Carolina Golf Club', // All matches at CGC
         team1Points,
         team2Points,
         winner: team1Points > team2Points ? team1Id : (team2Points > team1Points ? team2Id : null),
@@ -361,12 +310,13 @@ function handleScoreSubmit(e) {
     e.target.reset();
     document.getElementById('match-date').valueAsDate = new Date();
     
-    // Reset hole styles
-    for (let i = 1; i <= 18; i++) {
-        const select = document.getElementById(`hole-${i}`);
-        select.classList.remove('team1-win', 'team2-win', 'tie');
-    }
-    calculateScore();
+    // Reset the form
+    document.getElementById('team1-points-input').value = '';
+    document.getElementById('team2-points-input').value = '';
+    document.getElementById('submit-btn').disabled = true;
+    document.getElementById('match-result-preview').style.display = 'none';
+    document.getElementById('points-total').classList.remove('valid', 'invalid');
+    document.getElementById('total-display').textContent = '0';
 }
 
 // ==================== Schedule ====================
