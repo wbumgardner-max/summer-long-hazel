@@ -508,51 +508,19 @@ footer p {
 /* Tablet */
 @media (max-width: 768px) {
     .purse-counter {
-        padding: 1rem 1.25rem;
-        gap: 0.75rem;
+        padding: 0.6rem 1rem;
+        gap: 0.6rem;
+        margin-bottom: 1rem;
     }
     
     .purse-icon {
-        font-size: 1.75rem;
-    }
-    
-    .purse-amount {
-        font-size: 1.75rem;
-    }
-    
-    .purse-label {
-        font-size: 0.7rem;
-    }
-    
-    .purse-teams {
-        font-size: 0.85rem;
-        padding-left: 0.75rem;
-    }
-    
-    .purse-teams span {
-        font-size: 1rem;
-    }
-}
-
-/* Small phones */
-@media (max-width: 420px) {
-    .purse-counter {
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 0.5rem 1rem;
-        padding: 0.75rem 1rem;
-    }
-    
-    .purse-icon {
-        font-size: 1.5rem;
-        animation: none;
+        font-size: 1.3rem;
     }
     
     .purse-content {
         flex-direction: row;
         align-items: baseline;
-        gap: 0.5rem;
+        gap: 0.4rem;
     }
     
     .purse-label {
@@ -560,19 +528,62 @@ footer p {
     }
     
     .purse-amount {
-        font-size: 1.4rem;
+        font-size: 1.3rem;
+    }
+    
+    .purse-teams {
+        font-size: 0.75rem;
+        padding-left: 0.6rem;
+    }
+    
+    .purse-teams span {
+        font-size: 0.85rem;
+    }
+}
+
+/* Small phones */
+@media (max-width: 420px) {
+    .purse-counter {
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+    }
+    
+    .purse-icon {
+        font-size: 1.1rem;
+        animation: none;
+    }
+    
+    .purse-content {
+        flex-direction: row;
+        align-items: baseline;
+        gap: 0.35rem;
+    }
+    
+    .purse-label {
+        font-size: 0.6rem;
+        text-transform: none;
+        letter-spacing: 0;
+    }
+    
+    .purse-amount {
+        font-size: 1.1rem;
     }
     
     .purse-teams {
         border-left: 1px solid rgba(255,255,255,0.3);
         border-top: none;
-        padding-left: 0.75rem;
+        padding-left: 0.5rem;
         padding-top: 0;
-        font-size: 0.8rem;
+        font-size: 0.7rem;
     }
     
     .purse-teams span {
-        font-size: 0.9rem;
+        font-size: 0.8rem;
     }
     
     .format-container h2 {
