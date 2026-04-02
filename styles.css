@@ -31,27 +31,36 @@ body {
 header {
     background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
     color: white;
-    padding: 2rem 1rem 1rem;
-    text-align: center;
+    padding: 1rem 2rem;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
 }
 
 .club-logo {
-    width: 140px;
+    width: 80px;
     height: auto;
-    margin-bottom: 1rem;
-    border-radius: 8px;
+    border-radius: 4px;
+}
+
+.header-content {
+    text-align: right;
 }
 
 .header-content h1 {
     font-family: 'Playfair Display', serif;
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
+    font-size: 2rem;
+    margin-bottom: 0.25rem;
 }
 
 .tagline {
     font-style: italic;
     opacity: 0.9;
-    font-size: 1.1rem;
+    font-size: 0.95rem;
 }
 
 nav {
