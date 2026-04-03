@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initScoreForm();
     initSchedule();
     initAdmin();
-    initPayEntryAttention();
     
     // Secret admin access via /admin path or session flag
     const isAdminMode = window.location.pathname.includes('admin') || 
@@ -28,25 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
-
-// ==================== Pay Entry Attention ====================
-function initPayEntryAttention() {
-    const deadline = new Date('2026-04-08T23:59:59');
-    const now = new Date();
-    
-    // Only show attention animation before deadline
-    if (now < deadline) {
-        const payEntryBtn = document.querySelector('.nav-btn[data-view="payment"]');
-        if (payEntryBtn) {
-            payEntryBtn.classList.add('attention');
-            
-            // Remove attention class when clicked (they got the message)
-            payEntryBtn.addEventListener('click', () => {
-                payEntryBtn.classList.remove('attention');
-            });
-        }
-    }
-}
 
 // ==================== Navigation ====================
 function initNavigation() {
