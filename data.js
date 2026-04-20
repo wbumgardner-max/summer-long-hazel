@@ -1,7 +1,7 @@
 // Summer Long Hazel Tournament Data
 // Last updated: 2026-03-28
 
-const DATA_VERSION = 4;
+const DATA_VERSION = 5;
 
 const TOURNAMENT_DATA = {
     name: "The Summer Long Hazel",
@@ -234,7 +234,17 @@ function loadData() {
     if (saved) {
         const parsed = JSON.parse(saved);
 
-        if ((parsed.version || 1) < DATA_VERSION) {
+        const savedVersion = parsed.version || 1;
+
+        if (savedVersion < DATA_VERSION) {
+            localStorage.removeItem('summerLongHazel');
+            localStorage.removeItem('summerLongHazelVersion');
+            return;
+        }
+
+        // Safety valve: if an old payload somehow survives without the full spreadsheet team list,
+        // discard it and fall back to the shipped dataset.
+        if (Array.isArray(parsed.teams) && parsed.teams.length < TOURNAMENT_DATA.teams.length) {
             localStorage.removeItem('summerLongHazel');
             localStorage.removeItem('summerLongHazelVersion');
             return;
