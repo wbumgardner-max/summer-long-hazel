@@ -1,7 +1,7 @@
 // Summer Long Hazel Tournament Data
 // Last updated: 2026-03-28
 
-const DATA_VERSION = 2;
+const DATA_VERSION = 3;
 
 const TOURNAMENT_DATA = {
     name: "The Summer Long Hazel",
@@ -236,6 +236,7 @@ function loadData() {
 
         if ((parsed.version || 1) < DATA_VERSION) {
             localStorage.removeItem('summerLongHazel');
+            localStorage.removeItem('summerLongHazelVersion');
             return;
         }
 
