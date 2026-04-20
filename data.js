@@ -1,6 +1,8 @@
 // Summer Long Hazel Tournament Data
 // Last updated: 2026-03-28
 
+const DATA_VERSION = 2;
+
 const TOURNAMENT_DATA = {
     name: "The Summer Long Hazel",
     season: {
@@ -216,7 +218,14 @@ function getTeamFullName(teamId) {
 
 // Save data to localStorage
 function saveData() {
-    localStorage.setItem('summerLongHazel', JSON.stringify(TOURNAMENT_DATA));
+    const payload = {
+        version: DATA_VERSION,
+        teams: TOURNAMENT_DATA.teams,
+        matches: TOURNAMENT_DATA.matches,
+        payments: TOURNAMENT_DATA.payments,
+        venmo: TOURNAMENT_DATA.venmo
+    };
+    localStorage.setItem('summerLongHazel', JSON.stringify(payload));
 }
 
 // Load data from localStorage
@@ -224,6 +233,12 @@ function loadData() {
     const saved = localStorage.getItem('summerLongHazel');
     if (saved) {
         const parsed = JSON.parse(saved);
+
+        if ((parsed.version || 1) < DATA_VERSION) {
+            localStorage.removeItem('summerLongHazel');
+            return;
+        }
+
         // Merge saved data
         TOURNAMENT_DATA.teams = parsed.teams || TOURNAMENT_DATA.teams;
         TOURNAMENT_DATA.matches = parsed.matches || [];
