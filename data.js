@@ -1,7 +1,7 @@
 // Summer Long Hazel Tournament Data
 // Last updated: 2026-03-28
 
-const DATA_VERSION = 3;
+const DATA_VERSION = 4;
 
 const TOURNAMENT_DATA = {
     name: "The Summer Long Hazel",
@@ -240,8 +240,8 @@ function loadData() {
             return;
         }
 
-        // Merge saved data
-        TOURNAMENT_DATA.teams = parsed.teams || TOURNAMENT_DATA.teams;
+        // Keep canonical teams from the shipped dataset so new spreadsheet adds always show up.
+        // Only merge user-generated state from local storage.
         TOURNAMENT_DATA.matches = parsed.matches || [];
         TOURNAMENT_DATA.payments = parsed.payments || {};
         TOURNAMENT_DATA.venmo = parsed.venmo || TOURNAMENT_DATA.venmo;
