@@ -490,6 +490,7 @@ function renderFlightAssignment() {
                 <option value="ping" ${team.flight === 'ping' ? 'selected' : ''}>Ping</option>
                 <option value="taylormade" ${team.flight === 'taylormade' ? 'selected' : ''}>TaylorMade</option>
                 <option value="callaway" ${team.flight === 'callaway' ? 'selected' : ''}>Callaway</option>
+                <option value="pxg" ${team.flight === 'pxg' ? 'selected' : ''}>PXG</option>
             </select>
         </div>
     `).join('');
