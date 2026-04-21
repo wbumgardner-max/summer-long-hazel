@@ -1,7 +1,7 @@
 // Summer Long Hazel Tournament Data
 // Last updated: 2026-04-21
 
-const DATA_VERSION = 5;
+const DATA_VERSION = 6;
 
 const TOURNAMENT_DATA = {
     name: "The Summer Long Hazel",
@@ -30,6 +30,7 @@ const TOURNAMENT_DATA = {
         { name: "Adam Greene", email: "adam.greene.uva@gmail.com" },
         { name: "AJ Hunter", email: "ajhunter512@gmail.com" },
         { name: "Andrew Payne", email: "andrewpayne4@gmail.com" },
+        { name: "Andrew Rowl", email: "leerowl@outlook.com" },
         { name: "Beau Wilder", email: "beau@wilderlawgroup.com" },
         { name: "Ben Huckaby", email: "b.huck11@gmail.com" },
         { name: "Ben Johnson", email: "benejohnsonjr@gmail.com" },
@@ -56,10 +57,11 @@ const TOURNAMENT_DATA = {
         { name: "John (JJ) Jarrett", email: "jon@jbenjaminjarrett.com" },
         { name: "John Reilly", email: "johnj.reilly1967@yahoo.com" },
         { name: "John Reilly Jr.", email: "jreilly96@gmail.com" },
+        { name: "Jon Visconti", email: "jjvisco@gmail.com" },
         { name: "Justin Gough", email: "justin.p.gough@gmail.com" },
         { name: "Ken Doty", email: "ksdoty@yahoo.com" },
         { name: "Kevin Blocker", email: "Kevin.Blocker@gmail.com" },
-        { name: "Kevin Cella", email: "crcella@gmail.com" },
+        { name: "Kevin Cella", email: "krcella@gmail.com" },
         { name: "Kyle Bumgardner", email: "kylebumgardner@gmail.com" },
         { name: "Lee Froneberger", email: "lfroneberger@1asmc.com" },
         { name: "Locke Page", email: "lockepage1@yahoo.com" },
