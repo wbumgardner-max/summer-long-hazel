@@ -150,14 +150,47 @@ function renderLeaderboard(flight) {
 function initPayment() {
     renderPaymentStatus();
     updateVenmoLink();
+
+    const venmoLink = document.getElementById('venmo-link');
+    if (venmoLink && !venmoLink.dataset.bound) {
+        venmoLink.addEventListener('click', (e) => {
+            const webUrl = venmoLink.getAttribute('data-venmo-web');
+            const appUrl = venmoLink.getAttribute('data-venmo-app');
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent || '');
+
+            if (!isMobile || !appUrl || !webUrl) return;
+
+            e.preventDefault();
+            const fallback = setTimeout(() => {
+                window.location.href = webUrl;
+            }, 900);
+
+            const onHide = () => {
+                clearTimeout(fallback);
+                document.removeEventListener('visibilitychange', onHide);
+            };
+
+            document.addEventListener('visibilitychange', onHide);
+            window.location.href = appUrl;
+        });
+        venmoLink.dataset.bound = 'true';
+    }
 }
 
 function updateVenmoLink() {
     const username = TOURNAMENT_DATA.venmo?.username || '@SummerLongHazel';
     const usernameClean = username.replace('@', '');
-    
+    const amount = 1000;
+    const note = 'Summer Long Hazel Entry Fee';
+    const encodedNote = encodeURIComponent(note);
+    const webUrl = `https://venmo.com/${usernameClean}?txn=pay&amount=${amount}&note=${encodedNote}`;
+    const deepLink = `venmo://paycharge?txn=pay&recipients=${usernameClean}&amount=${amount}&note=${encodedNote}`;
+    const venmoLink = document.getElementById('venmo-link');
+
     document.getElementById('venmo-username').textContent = username;
-    document.getElementById('venmo-link').href = `https://venmo.com/${usernameClean}?txn=pay&amount=1000&note=Summer%20Long%20Hazel%20Entry%20Fee`;
+    venmoLink.href = webUrl;
+    venmoLink.setAttribute('data-venmo-web', webUrl);
+    venmoLink.setAttribute('data-venmo-app', deepLink);
 }
 
 function renderPaymentStatus() {
