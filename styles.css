@@ -173,9 +173,9 @@ main {
     border-bottom: none;
 }
 
-.rank-1 { background: linear-gradient(90deg, #ffd70033, transparent); }
-.rank-2 { background: linear-gradient(90deg, #c0c0c033, transparent); }
-.rank-3 { background: linear-gradient(90deg, #cd7f3233, transparent); }
+.rank-1 { background: linear-gradient(90deg, #ffd70014, transparent 55%); }
+.rank-2 { background: linear-gradient(90deg, #c0c0c014, transparent 55%); }
+.rank-3 { background: linear-gradient(90deg, #cd7f3214, transparent 55%); }
 
 .team-name {
     font-weight: 600;
