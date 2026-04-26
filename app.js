@@ -548,26 +548,68 @@ function saveFlightAssignments() {
 
 function renderPendingScores() {
     const container = document.getElementById('pending-scores');
-    const pending = TOURNAMENT_DATA.matches.filter(m => !m.verified);
+    const matches = [...TOURNAMENT_DATA.matches]
+        .sort((a, b) => new Date(b.submittedAt || b.date) - new Date(a.submittedAt || a.date));
     
-    if (pending.length === 0) {
-        container.innerHTML = '<p style="color:#666">No pending submissions.</p>';
+    if (matches.length === 0) {
+        container.innerHTML = '<p style="color:#666">No submitted scores yet.</p>';
         return;
     }
     
-    container.innerHTML = pending.map(match => `
+    container.innerHTML = matches.map(match => `
         <div class="match-card">
             <div>
                 <strong>${getTeamName(match.team1Id)} vs ${getTeamName(match.team2Id)}</strong>
                 <br>Score: ${match.team1Points} - ${match.team2Points}
                 <br><small>${match.date} @ ${match.course}</small>
+                <br><small>${match.verified ? 'Posted to standings' : 'Pending verification'}</small>
             </div>
             <div>
-                <button class="admin-btn" onclick="verifyMatch(${match.id})">✓ Verify</button>
-                <button class="admin-btn" style="background:#dc3545" onclick="rejectMatch(${match.id})">✗ Reject</button>
+                <button class="admin-btn" onclick="editMatchScore(${match.id})">✎ Edit Score</button>
+                ${match.verified ? '' : `<button class="admin-btn" onclick="verifyMatch(${match.id})">✓ Verify</button>`}
+                <button class="admin-btn" style="background:#dc3545" onclick="rejectMatch(${match.id})">✗ Delete</button>
             </div>
         </div>
     `).join('');
+}
+
+function editMatchScore(matchId) {
+    const match = TOURNAMENT_DATA.matches.find(m => m.id === matchId);
+    if (!match) return;
+
+    const team1Name = getTeamName(match.team1Id);
+    const team2Name = getTeamName(match.team2Id);
+    const team1Points = prompt(`Enter points for ${team1Name}`, match.team1Points);
+    if (team1Points === null) return;
+
+    const team2Points = prompt(`Enter points for ${team2Name}`, match.team2Points);
+    if (team2Points === null) return;
+
+    const parsedTeam1Points = parseFloat(team1Points);
+    const parsedTeam2Points = parseFloat(team2Points);
+
+    if (Number.isNaN(parsedTeam1Points) || Number.isNaN(parsedTeam2Points)) {
+        showToast('Please enter valid numbers for both scores', 'error');
+        return;
+    }
+
+    if (parsedTeam1Points + parsedTeam2Points !== 20) {
+        showToast('Points must total 20', 'error');
+        return;
+    }
+
+    match.team1Points = parsedTeam1Points;
+    match.team2Points = parsedTeam2Points;
+    match.winner = parsedTeam1Points > parsedTeam2Points ? match.team1Id : (parsedTeam2Points > parsedTeam1Points ? match.team2Id : null);
+    match.verified = true;
+    match.updatedAt = new Date().toISOString();
+
+    saveData();
+    calculateStandings();
+    renderPendingScores();
+    renderLeaderboard('all');
+    renderSchedule();
+    showToast('Score updated!', 'success');
 }
 
 function verifyMatch(matchId) {
@@ -578,6 +620,7 @@ function verifyMatch(matchId) {
         calculateStandings();
         renderPendingScores();
         renderLeaderboard('all');
+        renderSchedule();
         showToast('Match verified!', 'success');
     }
 }
@@ -585,8 +628,11 @@ function verifyMatch(matchId) {
 function rejectMatch(matchId) {
     TOURNAMENT_DATA.matches = TOURNAMENT_DATA.matches.filter(m => m.id !== matchId);
     saveData();
+    calculateStandings();
     renderPendingScores();
-    showToast('Match rejected', 'error');
+    renderLeaderboard('all');
+    renderSchedule();
+    showToast('Match deleted', 'error');
 }
 
 function generateWeeklyUpdate() {
