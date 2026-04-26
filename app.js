@@ -1,6 +1,7 @@
 // Summer Long Hazel - Main Application
 
 const SCORE_API_URL = 'https://script.google.com/macros/s/AKfycby6Dm2HEUtXcdNXUPY2sflBO_VFxhtpdHhi-iYmgGAmds5FDboqLRu-5xiZ1ts89Nde4w/exec';
+let scoreSubmitInProgress = false;
 
 document.addEventListener('DOMContentLoaded', () => {
     initNavigation();
@@ -61,6 +62,26 @@ async function writeSharedScore(payload) {
 
     await new Promise(resolve => setTimeout(resolve, 750));
     await syncSharedScores();
+}
+
+function getMatchId(team1Id, team2Id) {
+    const lowTeamId = Math.min(team1Id, team2Id);
+    const highTeamId = Math.max(team1Id, team2Id);
+    return (lowTeamId * 1000) + highTeamId;
+}
+
+function upsertLocalMatch(match) {
+    const existingIndex = TOURNAMENT_DATA.matches.findIndex(m =>
+        Number(m.id) === Number(match.id) ||
+        ((Number(m.team1Id) === Number(match.team1Id) && Number(m.team2Id) === Number(match.team2Id)) ||
+         (Number(m.team1Id) === Number(match.team2Id) && Number(m.team2Id) === Number(match.team1Id)))
+    );
+
+    if (existingIndex >= 0) {
+        TOURNAMENT_DATA.matches[existingIndex] = { ...TOURNAMENT_DATA.matches[existingIndex], ...match };
+    } else {
+        TOURNAMENT_DATA.matches.push(match);
+    }
 }
 
 function refreshTournamentViews() {
@@ -409,6 +430,8 @@ function populateTeamSelects() {
 
 async function handleScoreSubmit(e) {
     e.preventDefault();
+
+    if (scoreSubmitInProgress) return;
     
     const team1Id = parseInt(document.getElementById('team1').value);
     const team2Id = parseInt(document.getElementById('team2').value);
@@ -429,8 +452,13 @@ async function handleScoreSubmit(e) {
         return;
     }
     
+    const submitBtn = document.getElementById('submit-btn');
+    scoreSubmitInProgress = true;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+
     const match = {
-        id: Date.now(),
+        id: getMatchId(team1Id, team2Id),
         date,
         team1Id,
         team2Id,
@@ -442,7 +470,7 @@ async function handleScoreSubmit(e) {
         submittedAt: new Date().toISOString()
     };
     
-    TOURNAMENT_DATA.matches.push(match);
+    upsertLocalMatch(match);
     saveData();
     refreshTournamentViews();
 
@@ -459,7 +487,9 @@ async function handleScoreSubmit(e) {
     // Reset the form
     document.getElementById('team1-points-input').value = '';
     document.getElementById('team2-points-input').value = '';
-    document.getElementById('submit-btn').disabled = true;
+    scoreSubmitInProgress = false;
+    submitBtn.textContent = 'Submit Match Result';
+    submitBtn.disabled = true;
     document.getElementById('match-result-preview').style.display = 'none';
     document.getElementById('points-total').classList.remove('valid', 'invalid');
     document.getElementById('total-display').textContent = '0';
