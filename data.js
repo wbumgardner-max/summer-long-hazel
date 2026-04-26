@@ -252,8 +252,20 @@ function loadData() {
         // Keep canonical teams from the shipped dataset so new spreadsheet adds always show up.
         // Only merge user-generated state from local storage.
         TOURNAMENT_DATA.matches = parsed.matches || [];
+
+        // Score approval is disabled: migrate any previously pending player submissions
+        // so they count immediately in standings after the update loads.
+        let migratedPendingScores = false;
+        TOURNAMENT_DATA.matches.forEach(match => {
+            if (match.verified === false) {
+                match.verified = true;
+                migratedPendingScores = true;
+            }
+        });
+
         TOURNAMENT_DATA.payments = parsed.payments || {};
         TOURNAMENT_DATA.venmo = parsed.venmo || TOURNAMENT_DATA.venmo;
+        if (migratedPendingScores) saveData();
         calculateStandings();
     }
 }

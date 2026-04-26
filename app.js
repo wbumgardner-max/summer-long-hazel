@@ -390,14 +390,17 @@ function handleScoreSubmit(e) {
         team1Points,
         team2Points,
         winner: team1Points > team2Points ? team1Id : (team2Points > team1Points ? team2Id : null),
-        verified: false, // Admin must verify
+        verified: true, // Player submissions now post immediately without admin approval
         submittedAt: new Date().toISOString()
     };
     
     TOURNAMENT_DATA.matches.push(match);
+    calculateStandings();
     saveData();
+    renderLeaderboard('all');
+    renderSchedule();
     
-    showToast('Match submitted! Awaiting admin verification.', 'success');
+    showToast('Match submitted! Leaderboard updated.', 'success');
     e.target.reset();
     document.getElementById('match-date').valueAsDate = new Date();
     
