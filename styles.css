@@ -1154,14 +1154,25 @@ footer p {
 }
 
 .points-group input {
-    width: 100px;
-    padding: 1rem;
+    width: 120px;
+    padding: 1rem 0.75rem;
     font-size: 2rem;
     font-weight: 700;
     text-align: center;
     border: 3px solid var(--border);
     border-radius: 12px;
     transition: border-color 0.2s;
+}
+
+.points-group input::-webkit-outer-spin-button,
+.points-group input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.points-group input[type=number] {
+    appearance: textfield;
+    -moz-appearance: textfield;
 }
 
 .points-group input:focus {
@@ -1200,7 +1211,9 @@ footer p {
 }
 
 .winner-display .value {
-    color: var(--primary);
+    color: white;
+    display: block;
+    margin-top: 0.5rem;
 }
 
 .submit-btn:disabled {
