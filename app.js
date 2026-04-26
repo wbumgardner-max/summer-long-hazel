@@ -1,5 +1,7 @@
 // Summer Long Hazel - Main Application
 
+const SCORE_API_URL = 'https://script.google.com/macros/s/AKfycby6Dm2HEUtXcdNXUPY2sflBO_VFxhtpdHhi-iYmgGAmds5FDboqLRu-5xiZ1ts89Nde4w/exec';
+
 document.addEventListener('DOMContentLoaded', () => {
     initNavigation();
     initLeaderboard();
@@ -7,6 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initScoreForm();
     initSchedule();
     initAdmin();
+    syncSharedScores();
+    setInterval(syncSharedScores, 60000); // keep open leaderboards reasonably fresh
     
     // Secret admin access via /admin path or session flag
     const isAdminMode = window.location.pathname.includes('admin') || 
@@ -27,6 +31,50 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+
+// ==================== Shared Score Database ====================
+async function syncSharedScores(showSuccessToast = false) {
+    try {
+        const response = await fetch(`${SCORE_API_URL}?t=${Date.now()}`, { cache: 'no-store' });
+        if (!response.ok) throw new Error('Could not load shared scores');
+        const data = await response.json();
+        if (!Array.isArray(data.matches)) throw new Error('Invalid shared score response');
+
+        TOURNAMENT_DATA.matches = data.matches;
+        saveData();
+        refreshTournamentViews();
+        if (showSuccessToast) showToast('Scores synced!', 'success');
+    } catch (error) {
+        console.warn('Shared score sync failed; using local cached scores.', error);
+    }
+}
+
+async function writeSharedScore(payload) {
+    // Apps Script writes successfully with a simple no-cors POST. We then refresh
+    // from the readable GET endpoint so every browser uses the shared sheet state.
+    await fetch(SCORE_API_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 750));
+    await syncSharedScores();
+}
+
+function refreshTournamentViews() {
+    calculateStandings();
+
+    const activeFlight = document.querySelector('.flight-tab.active')?.dataset.flight || 'all';
+    renderLeaderboard(activeFlight);
+    renderSchedule();
+
+    const adminContent = document.getElementById('admin-content');
+    if (adminContent && adminContent.style.display !== 'none') {
+        renderPendingScores();
+    }
+}
 
 // ==================== Navigation ====================
 function initNavigation() {
@@ -359,7 +407,7 @@ function populateTeamSelects() {
 
 // Hole-by-hole entry removed - using simplified points entry
 
-function handleScoreSubmit(e) {
+async function handleScoreSubmit(e) {
     e.preventDefault();
     
     const team1Id = parseInt(document.getElementById('team1').value);
@@ -395,12 +443,16 @@ function handleScoreSubmit(e) {
     };
     
     TOURNAMENT_DATA.matches.push(match);
-    calculateStandings();
     saveData();
-    renderLeaderboard('all');
-    renderSchedule();
-    
-    showToast('Match submitted! Leaderboard updated.', 'success');
+    refreshTournamentViews();
+
+    try {
+        await writeSharedScore(match);
+        showToast('Match submitted! Leaderboard updated for everyone.', 'success');
+    } catch (error) {
+        console.error('Shared score submit failed', error);
+        showToast('Saved on this device, but shared sync failed. Tell admin to check.', 'error');
+    }
     e.target.reset();
     document.getElementById('match-date').valueAsDate = new Date();
     
@@ -573,7 +625,7 @@ function renderPendingScores() {
     `).join('');
 }
 
-function editMatchScore(matchId) {
+async function editMatchScore(matchId) {
     const match = TOURNAMENT_DATA.matches.find(m => m.id === matchId);
     if (!match) return;
 
@@ -605,34 +657,45 @@ function editMatchScore(matchId) {
     match.updatedAt = new Date().toISOString();
 
     saveData();
-    calculateStandings();
-    renderPendingScores();
-    renderLeaderboard('all');
-    renderSchedule();
-    showToast('Score updated!', 'success');
+    refreshTournamentViews();
+
+    try {
+        await writeSharedScore(match);
+        showToast('Score updated for everyone!', 'success');
+    } catch (error) {
+        console.error('Shared score edit failed', error);
+        showToast('Updated on this device, but shared sync failed.', 'error');
+    }
 }
 
-function verifyMatch(matchId) {
+async function verifyMatch(matchId) {
     const match = TOURNAMENT_DATA.matches.find(m => m.id === matchId);
     if (match) {
         match.verified = true;
         saveData();
-        calculateStandings();
-        renderPendingScores();
-        renderLeaderboard('all');
-        renderSchedule();
-        showToast('Match verified!', 'success');
+        refreshTournamentViews();
+        try {
+            await writeSharedScore(match);
+            showToast('Match verified!', 'success');
+        } catch (error) {
+            console.error('Shared score verify failed', error);
+            showToast('Verified on this device, but shared sync failed.', 'error');
+        }
     }
 }
 
-function rejectMatch(matchId) {
+async function rejectMatch(matchId) {
     TOURNAMENT_DATA.matches = TOURNAMENT_DATA.matches.filter(m => m.id !== matchId);
     saveData();
-    calculateStandings();
-    renderPendingScores();
-    renderLeaderboard('all');
-    renderSchedule();
-    showToast('Match deleted', 'error');
+    refreshTournamentViews();
+
+    try {
+        await writeSharedScore({ action: 'delete', id: matchId });
+        showToast('Match deleted for everyone', 'error');
+    } catch (error) {
+        console.error('Shared score delete failed', error);
+        showToast('Deleted on this device, but shared sync failed.', 'error');
+    }
 }
 
 function generateWeeklyUpdate() {
