@@ -1,7 +1,7 @@
 // Summer Long Hazel Tournament Data
 // Last updated: 2026-04-21
 
-const DATA_VERSION = 7;
+const DATA_VERSION = 8;
 
 const TOURNAMENT_DATA = {
     name: "The Summer Long Hazel",
@@ -35,7 +35,7 @@ const TOURNAMENT_DATA = {
         { name: "Ben Huckaby", email: "b.huck11@gmail.com" },
         { name: "Ben Johnson", email: "benejohnsonjr@gmail.com" },
         { name: "Bo South", email: "bsouth@myers-chapman.com" },
-        { name: "Chris Kessler", email: "" },
+        { name: "Chris Kessler", email: "Ckessler22@gmail.com" },
         { name: "Cam Payne", email: "camerondpayne@gmail.com" },
         { name: "Carter Sorrell", email: "cartersorrell@mac.com" },
         { name: "Charles Jonas", email: "charles.jonas@icloud.com" },
