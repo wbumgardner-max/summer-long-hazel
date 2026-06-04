@@ -1,7 +1,7 @@
 // Summer Long Hazel Tournament Data
 // Last updated: 2026-04-21
 
-const DATA_VERSION = 6;
+const DATA_VERSION = 7;
 
 const TOURNAMENT_DATA = {
     name: "The Summer Long Hazel",
@@ -35,7 +35,7 @@ const TOURNAMENT_DATA = {
         { name: "Ben Huckaby", email: "b.huck11@gmail.com" },
         { name: "Ben Johnson", email: "benejohnsonjr@gmail.com" },
         { name: "Bo South", email: "bsouth@myers-chapman.com" },
-        { name: "Bryan Boyd", email: "bboyd432@gmail.com" },
+        { name: "Chris Kessler", email: "" },
         { name: "Cam Payne", email: "camerondpayne@gmail.com" },
         { name: "Carter Sorrell", email: "cartersorrell@mac.com" },
         { name: "Charles Jonas", email: "charles.jonas@icloud.com" },
@@ -115,7 +115,7 @@ const TOURNAMENT_DATA = {
         { id: 21, player1: "Sheldon Hilaire", player2: "Drew Mansfield", flight: "callaway" },
         { id: 22, player1: "Chris Miller", player2: "Sean Snell", flight: "callaway" },
         { id: 23, player1: "Will Lively", player2: "Andrew Payne", flight: "callaway" },
-        { id: 24, player1: "Bryan Boyd", player2: "AJ Hunter", flight: "callaway" },
+        { id: 24, player1: "Chris Kessler", player2: "AJ Hunter", flight: "callaway" },
         { id: 25, player1: "Jeff Jones", player2: "Michael Hodge", flight: "pxg" },
         { id: 26, player1: "Sean Preston", player2: "Jim McDermott", flight: "pxg" },
         { id: 27, player1: "John Reilly", player2: "John Reilly Jr.", flight: "pxg" },
