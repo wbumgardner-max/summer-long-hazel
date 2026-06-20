@@ -168,6 +168,24 @@ function animateValue(el, start, end, duration) {
     requestAnimationFrame(update);
 }
 
+function getLeaderboardTeamName(team) {
+    return `
+        <span class="team-player team-player-primary">${team.player1}</span>
+        <span class="team-player team-player-secondary">${team.player2}</span>
+    `;
+}
+
+function getFlightShortName(flight) {
+    const shortNames = {
+        titleist: 'T',
+        ping: 'P',
+        taylormade: 'TM',
+        callaway: 'C',
+        pxg: 'PXG'
+    };
+    return shortNames[flight] || capitalizeFirst(flight);
+}
+
 function renderLeaderboard(flight) {
     const tbody = document.getElementById('leaderboard-body');
     
@@ -192,10 +210,13 @@ function renderLeaderboard(flight) {
     tbody.innerHTML = teamsWithStandings.map((team, idx) => `
         <tr class="${idx < 3 ? 'rank-' + (idx + 1) : ''}">
             <td><strong>${idx + 1}</strong></td>
-            <td class="team-name">${getTeamFullName(team.id)}</td>
+            <td class="team-name">${getLeaderboardTeamName(team)}</td>
             <td>
                 ${team.flight ? 
-                    `<span class="flight-badge flight-${team.flight}">${capitalizeFirst(team.flight)}</span>` : 
+                    `<span class="flight-badge flight-${team.flight}">
+                        <span class="flight-label-full">${capitalizeFirst(team.flight)}</span>
+                        <span class="flight-label-short">${getFlightShortName(team.flight)}</span>
+                    </span>` : 
                     '<span style="color:#999">TBD</span>'}
             </td>
             <td>${team.wins}-${team.losses}-${team.ties}</td>

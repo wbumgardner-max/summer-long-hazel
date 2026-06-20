@@ -181,12 +181,20 @@ main {
     font-weight: 600;
 }
 
+.leaderboard .team-player + .team-player::before {
+    content: " & ";
+}
+
 .flight-badge {
     display: inline-block;
     padding: 0.25rem 0.75rem;
     border-radius: 12px;
     font-size: 0.85rem;
     font-weight: 500;
+}
+
+.flight-label-short {
+    display: none;
 }
 
 .flight-titleist { background: #dc354522; color: #dc3545; }
@@ -673,6 +681,124 @@ footer p {
     .points-divider {
         display: none;
     }
+
+    .leaderboard-container {
+        overflow-x: hidden;
+    }
+
+    .leaderboard {
+        min-width: 0;
+        table-layout: fixed;
+    }
+
+    .leaderboard th,
+    .leaderboard td {
+        padding: 0.85rem 0.35rem;
+        font-size: 0.8rem;
+        white-space: normal;
+        vertical-align: middle;
+    }
+
+    .leaderboard th {
+        font-size: 0.66rem;
+        letter-spacing: 0;
+        line-height: 1;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .leaderboard th:nth-child(1),
+    .leaderboard td:nth-child(1) {
+        width: 1.9rem;
+        text-align: center;
+    }
+
+    .leaderboard th:nth-child(3),
+    .leaderboard td:nth-child(3) {
+        width: 2.25rem;
+    }
+
+    .leaderboard th:nth-child(4),
+    .leaderboard td:nth-child(4) {
+        width: 3.25rem;
+    }
+
+    .leaderboard th:nth-child(5),
+    .leaderboard td:nth-child(5) {
+        width: 2.55rem;
+    }
+
+    .leaderboard th:nth-child(6),
+    .leaderboard td:nth-child(6) {
+        width: 2.25rem;
+    }
+
+    .leaderboard th:nth-child(n+3),
+    .leaderboard td:nth-child(n+3) {
+        text-align: center;
+    }
+
+    .leaderboard th:nth-child(3),
+    .leaderboard th:nth-child(1),
+    .leaderboard th:nth-child(5),
+    .leaderboard th:nth-child(6) {
+        font-size: 0;
+    }
+
+    .leaderboard th:nth-child(1)::after {
+        content: "#";
+        font-size: 0.66rem;
+    }
+
+    .leaderboard th:nth-child(3)::after {
+        content: "Flt";
+        font-size: 0.66rem;
+    }
+
+    .leaderboard th:nth-child(5)::after {
+        content: "Pts";
+        font-size: 0.66rem;
+    }
+
+    .leaderboard th:nth-child(6)::after {
+        content: "Pld";
+        font-size: 0.66rem;
+    }
+
+    .leaderboard .team-name {
+        line-height: 1.2;
+        overflow-wrap: anywhere;
+        font-weight: 500;
+    }
+
+    .leaderboard .team-player {
+        display: block;
+        color: var(--text);
+        font-weight: inherit;
+    }
+
+    .leaderboard .team-player + .team-player::before {
+        content: none;
+    }
+
+    .leaderboard .team-player-secondary {
+        margin-top: 0.15rem;
+    }
+
+    .leaderboard .flight-badge {
+        padding: 0;
+        background: transparent;
+        font-size: 0.72rem;
+        line-height: 1.15;
+    }
+
+    .leaderboard .flight-label-full {
+        display: none;
+    }
+
+    .leaderboard .flight-label-short {
+        display: inline;
+    }
 }
 
 /* Mobile-first touch optimizations */
@@ -724,6 +850,13 @@ footer p {
     
     .match-status {
         align-self: flex-end;
+    }
+}
+
+@media (max-width: 420px) {
+    .leaderboard th,
+    .leaderboard td {
+        padding: 0.85rem 0.35rem;
     }
 }
 
