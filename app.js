@@ -41,7 +41,7 @@ async function syncSharedScores(showSuccessToast = false) {
         const data = await response.json();
         if (!Array.isArray(data.matches)) throw new Error('Invalid shared score response');
 
-        TOURNAMENT_DATA.matches = data.matches;
+        TOURNAMENT_DATA.matches = normalizeMatches(data.matches);
         saveData();
         refreshTournamentViews();
         if (showSuccessToast) showToast('Scores synced!', 'success');
@@ -70,6 +70,43 @@ function getMatchId(team1Id, team2Id) {
     return (lowTeamId * 1000) + highTeamId;
 }
 
+function getMatchPairKey(match) {
+    return getMatchId(Number(match.team1Id), Number(match.team2Id));
+}
+
+function getMatchTimestamp(match) {
+    return new Date(match.updatedAt || match.submittedAt || match.date || 0).getTime() || 0;
+}
+
+function normalizeMatches(matches) {
+    const matchesByPair = new Map();
+
+    matches.forEach(match => {
+        const key = getMatchPairKey(match);
+        const existing = matchesByPair.get(key);
+
+        if (!existing || getMatchTimestamp(match) >= getMatchTimestamp(existing)) {
+            matchesByPair.set(key, match);
+        }
+    });
+
+    return Array.from(matchesByPair.values());
+}
+
+function getMatchPointsForTeam(match, teamId) {
+    if (Number(match.team1Id) === Number(teamId)) return match.team1Points;
+    if (Number(match.team2Id) === Number(teamId)) return match.team2Points;
+    return null;
+}
+
+function isMatchWinner(match, teamId) {
+    return Number(match.winner) === Number(teamId);
+}
+
+function renderWinnerBadge(match, teamId) {
+    return isMatchWinner(match, teamId) ? '<span class="winner-badge">Winner</span>' : '';
+}
+
 function upsertLocalMatch(match) {
     const existingIndex = TOURNAMENT_DATA.matches.findIndex(m =>
         Number(m.id) === Number(match.id) ||
@@ -82,6 +119,8 @@ function upsertLocalMatch(match) {
     } else {
         TOURNAMENT_DATA.matches.push(match);
     }
+
+    TOURNAMENT_DATA.matches = normalizeMatches(TOURNAMENT_DATA.matches);
 }
 
 function refreshTournamentViews() {
@@ -573,16 +612,22 @@ function renderSchedule() {
     }
     
     container.innerHTML = filtered.map(m => `
-        <div class="match-card">
+        <div class="match-card ${m.match ? 'match-card-completed' : ''}">
             <div class="match-teams">
-                <span class="team-name">${getTeamName(m.team1.id)}</span>
+                <span class="team-name ${m.match && isMatchWinner(m.match, m.team1.id) ? 'match-winner-team' : ''}">
+                    ${getTeamName(m.team1.id)}
+                    ${m.match ? renderWinnerBadge(m.match, m.team1.id) : ''}
+                </span>
                 <span class="match-vs">vs</span>
-                <span class="team-name">${getTeamName(m.team2.id)}</span>
+                <span class="team-name ${m.match && isMatchWinner(m.match, m.team2.id) ? 'match-winner-team' : ''}">
+                    ${getTeamName(m.team2.id)}
+                    ${m.match ? renderWinnerBadge(m.match, m.team2.id) : ''}
+                </span>
             </div>
             <span class="flight-badge flight-${m.flight}">${capitalizeFirst(m.flight)}</span>
             ${m.match ? `
-                <div>
-                    <strong>${m.match.team1Points} - ${m.match.team2Points}</strong>
+                <div class="match-score">
+                    <strong>${getMatchPointsForTeam(m.match, m.team1.id)} - ${getMatchPointsForTeam(m.match, m.team2.id)}</strong>
                     <br><small>${m.match.date} @ ${m.match.course}</small>
                 </div>
             ` : ''}
@@ -662,7 +707,17 @@ function renderPendingScores() {
     container.innerHTML = matches.map(match => `
         <div class="match-card">
             <div>
-                <strong>${getTeamName(match.team1Id)} vs ${getTeamName(match.team2Id)}</strong>
+                <strong>
+                    <span class="${isMatchWinner(match, match.team1Id) ? 'match-winner-team' : ''}">
+                        ${getTeamName(match.team1Id)}
+                        ${renderWinnerBadge(match, match.team1Id)}
+                    </span>
+                    vs
+                    <span class="${isMatchWinner(match, match.team2Id) ? 'match-winner-team' : ''}">
+                        ${getTeamName(match.team2Id)}
+                        ${renderWinnerBadge(match, match.team2Id)}
+                    </span>
+                </strong>
                 <br>Score: ${match.team1Points} - ${match.team2Points}
                 <br><small>${match.date} @ ${match.course}</small>
                 <br><small>${match.verified ? 'Posted to standings' : 'Pending verification'}</small>
