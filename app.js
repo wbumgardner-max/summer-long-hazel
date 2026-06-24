@@ -2,6 +2,17 @@
 
 const SCORE_API_URL = 'https://script.google.com/macros/s/AKfycby6Dm2HEUtXcdNXUPY2sflBO_VFxhtpdHhi-iYmgGAmds5FDboqLRu-5xiZ1ts89Nde4w/exec';
 let scoreSubmitInProgress = false;
+let leaderboardLastUpdatedAt = null;
+
+const FLIGHT_LABELS = {
+    titleist: 'Titleist',
+    ping: 'Ping',
+    taylormade: 'TaylorMade',
+    callaway: 'Callaway',
+    pxg: 'PXG'
+};
+
+const COURSE_LABEL = 'CGC';
 
 document.addEventListener('DOMContentLoaded', () => {
     initNavigation();
@@ -42,6 +53,7 @@ async function syncSharedScores(showSuccessToast = false) {
         if (!Array.isArray(data.matches)) throw new Error('Invalid shared score response');
 
         TOURNAMENT_DATA.matches = normalizeMatches(data.matches);
+        leaderboardLastUpdatedAt = new Date();
         saveData();
         refreshTournamentViews();
         if (showSuccessToast) showToast('Scores synced!', 'success');
@@ -209,9 +221,13 @@ function animateValue(el, start, end, duration) {
 
 function getLeaderboardTeamName(team) {
     return `
-        <span class="team-player team-player-primary">${team.player1}</span>
-        <span class="team-player team-player-secondary">${team.player2}</span>
+        <span class="team-player team-player-primary">${formatPlayerName(team.player1)}</span>
+        <span class="team-player team-player-secondary">${formatPlayerName(team.player2)}</span>
     `;
+}
+
+function getFlightLabel(flight) {
+    return FLIGHT_LABELS[flight] || capitalizeFirst(flight || '');
 }
 
 function getFlightShortName(flight) {
@@ -222,11 +238,20 @@ function getFlightShortName(flight) {
         callaway: 'C',
         pxg: 'PXG'
     };
-    return shortNames[flight] || capitalizeFirst(flight);
+    return shortNames[flight] || getFlightLabel(flight);
+}
+
+function renderLeaderboardLastUpdated() {
+    const el = document.getElementById('leaderboard-last-updated');
+    if (!el) return;
+
+    const timestamp = leaderboardLastUpdatedAt || getLatestLeaderboardTimestamp();
+    el.textContent = timestamp ? `Last updated ${formatDateTime(timestamp)}` : 'Last updated when scores sync';
 }
 
 function renderLeaderboard(flight) {
     const tbody = document.getElementById('leaderboard-body');
+    renderLeaderboardLastUpdated();
     
     // Get teams with standings
     let teamsWithStandings = TOURNAMENT_DATA.teams.map(team => ({
@@ -253,7 +278,7 @@ function renderLeaderboard(flight) {
             <td>
                 ${team.flight ? 
                     `<span class="flight-badge flight-${team.flight}">
-                        <span class="flight-label-full">${capitalizeFirst(team.flight)}</span>
+                        <span class="flight-label-full">${getFlightLabel(team.flight)}</span>
                         <span class="flight-label-short">${getFlightShortName(team.flight)}</span>
                     </span>` : 
                     '<span style="color:#999">TBD</span>'}
@@ -522,7 +547,7 @@ async function handleScoreSubmit(e) {
         date,
         team1Id,
         team2Id,
-        course: 'Carolina Golf Club', // All matches at CGC
+        course: COURSE_LABEL,
         team1Points,
         team2Points,
         winner: team1Points > team2Points ? team1Id : (team2Points > team1Points ? team2Id : null),
@@ -624,11 +649,11 @@ function renderSchedule() {
                     ${m.match ? renderWinnerBadge(m.match, m.team2.id) : ''}
                 </span>
             </div>
-            <span class="flight-badge flight-${m.flight}">${capitalizeFirst(m.flight)}</span>
+            <span class="flight-badge flight-${m.flight}">${getFlightLabel(m.flight)}</span>
             ${m.match ? `
                 <div class="match-score">
                     <strong>${getMatchPointsForTeam(m.match, m.team1.id)} - ${getMatchPointsForTeam(m.match, m.team2.id)}</strong>
-                    <br><small>${m.match.date} @ ${m.match.course}</small>
+                    <br><small>${getMatchDisplayMeta(m.match)}</small>
                 </div>
             ` : ''}
             <span class="match-status status-${m.status}">${capitalizeFirst(m.status)}</span>
@@ -719,7 +744,7 @@ function renderPendingScores() {
                     </span>
                 </strong>
                 <br>Score: ${match.team1Points} - ${match.team2Points}
-                <br><small>${match.date} @ ${match.course}</small>
+                <br><small>${getMatchDisplayMeta(match)}</small>
                 <br><small>${match.verified ? 'Posted to standings' : 'Pending verification'}</small>
             </div>
             <div>
@@ -875,6 +900,111 @@ function downloadBlob(blob, filename) {
 }
 
 // ==================== Utilities ====================
+function formatPlayerName(name) {
+    if (!name) return '';
+    const rawName = String(name).trim();
+    const canonicalPlayer = TOURNAMENT_DATA.players?.find(player =>
+        player.name.toLowerCase() === rawName.toLowerCase()
+    );
+
+    if (canonicalPlayer) return canonicalPlayer.name;
+
+    return rawName
+        .split(/\s+/)
+        .map(part => {
+            if (/^\([A-Z]+\)$/.test(part) || /^[A-Z]{2,}$/.test(part)) return part;
+            if (/^(Jr\.?|Sr\.?|II|III|IV)$/i.test(part)) {
+                return part.replace(/^jr\.?$/i, 'Jr.').replace(/^sr\.?$/i, 'Sr.');
+            }
+            return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
+        })
+        .join(' ');
+}
+
+function getLastNameLabel(name) {
+    const formatted = formatPlayerName(name);
+    const parts = formatted.split(/\s+/).filter(part => !/^\(.+\)$/.test(part));
+    const suffix = parts[parts.length - 1];
+
+    if (/^(Jr\.|Sr\.|II|III|IV)$/.test(suffix) && parts.length >= 2) {
+        return `${parts[parts.length - 2]} ${suffix}`;
+    }
+
+    return suffix || formatted;
+}
+
+function getBaseLastName(name) {
+    return getLastNameLabel(name).replace(/\s+(Jr\.|Sr\.|II|III|IV)$/i, '');
+}
+
+function formatTeamShortName(team) {
+    const player1 = formatPlayerName(team.player1);
+    const player2 = formatPlayerName(team.player2);
+    const player1Last = getLastNameLabel(player1);
+    const player2Last = getLastNameLabel(player2);
+
+    if (getBaseLastName(player1) === getBaseLastName(player2)) {
+        return `${player1} / ${player2}`;
+    }
+
+    return `${player1Last} / ${player2Last}`;
+}
+
+function getDateOnlyParts(value) {
+    if (!value) return null;
+    const match = String(value).match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (!match) return null;
+    return {
+        year: Number(match[1]),
+        month: Number(match[2]),
+        day: Number(match[3])
+    };
+}
+
+function formatDateOnly(value) {
+    const parts = getDateOnlyParts(value);
+    if (!parts) return '';
+    const date = new Date(parts.year, parts.month - 1, parts.day);
+    return date.toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+    });
+}
+
+function formatDateTime(value) {
+    return new Date(value).toLocaleString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit'
+    });
+}
+
+function formatCourseLabel(course) {
+    const label = String(course || '').trim();
+    if (!label || label.toLowerCase() === 'carolina golf club') return COURSE_LABEL;
+    return label;
+}
+
+function getMatchDisplayMeta(match) {
+    const dateLabel = formatDateOnly(match.date);
+    const courseLabel = formatCourseLabel(match.course);
+    return dateLabel ? `${dateLabel} @ ${courseLabel}` : courseLabel;
+}
+
+function getLatestLeaderboardTimestamp() {
+    const latestTime = Math.max(
+        ...TOURNAMENT_DATA.matches
+            .map(match => new Date(match.updatedAt || match.submittedAt || 0).getTime())
+            .filter(Boolean),
+        0
+    );
+
+    return latestTime ? new Date(latestTime) : null;
+}
+
 function capitalizeFirst(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }

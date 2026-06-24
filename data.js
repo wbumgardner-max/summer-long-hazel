@@ -1,7 +1,7 @@
 // Summer Long Hazel Tournament Data
 // Last updated: 2026-04-21
 
-const DATA_VERSION = 8;
+const DATA_VERSION = 9;
 
 const TOURNAMENT_DATA = {
     name: "The Summer Long Hazel",
@@ -41,7 +41,7 @@ const TOURNAMENT_DATA = {
         { name: "Charles Jonas", email: "charles.jonas@icloud.com" },
         { name: "Chris Drake", email: "cddrake7@gmail.com" },
         { name: "Chris Miller", email: "chrism284@gmail.com" },
-        { name: "Christian ciciarelli", email: "pcciciarelli@gmail.com" },
+        { name: "Christian Ciciarelli", email: "pcciciarelli@gmail.com" },
         { name: "Drew Mansfield", email: "dmansfield@vinmar.com" },
         { name: "Erik Wallace", email: "ecwallace9@gmail.com" },
         { name: "Fred Matulli", email: "fred.matrulli@gmail.com" },
@@ -120,7 +120,7 @@ const TOURNAMENT_DATA = {
         { id: 26, player1: "Sean Preston", player2: "Jim McDermott", flight: "pxg" },
         { id: 27, player1: "John Reilly", player2: "John Reilly Jr.", flight: "pxg" },
         { id: 28, player1: "Ben Johnson", player2: "Kevin Blocker", flight: "pxg" },
-        { id: 29, player1: "Christian ciciarelli", player2: "Chris Drake", flight: "pxg" },
+        { id: 29, player1: "Christian Ciciarelli", player2: "Chris Drake", flight: "pxg" },
         { id: 30, player1: "Jack Willen", player2: "Ben Huckaby", flight: "pxg" }
     ],
     
@@ -205,13 +205,19 @@ function getTeam(teamId) {
 function getTeamName(teamId) {
     const team = getTeam(teamId);
     if (!team) return "Unknown";
-    return `${team.player1.split(' ')[1]} / ${team.player2.split(' ')[1]}`;
+    if (typeof formatTeamShortName === 'function') {
+        return formatTeamShortName(team);
+    }
+    return `${team.player1} / ${team.player2}`;
 }
 
 // Get full team display name
 function getTeamFullName(teamId) {
     const team = getTeam(teamId);
     if (!team) return "Unknown";
+    if (typeof formatPlayerName === 'function') {
+        return `${formatPlayerName(team.player1)} & ${formatPlayerName(team.player2)}`;
+    }
     return `${team.player1} & ${team.player2}`;
 }
 

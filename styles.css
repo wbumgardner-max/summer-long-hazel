@@ -139,6 +139,13 @@ main {
     border-color: var(--primary);
 }
 
+.leaderboard-meta {
+    color: var(--text-light);
+    font-size: 0.85rem;
+    margin: -0.75rem 0 0.75rem;
+    text-align: right;
+}
+
 /* Leaderboard Table */
 .leaderboard-container {
     background: var(--card-bg);
