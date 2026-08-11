@@ -1,13 +1,13 @@
 // Summer Long Hazel Tournament Data
 // Last updated: 2026-04-21
 
-const DATA_VERSION = 9;
+const DATA_VERSION = 10;
 
 const TOURNAMENT_DATA = {
     name: "The Summer Long Hazel",
     season: {
         start: "2026-04-15",
-        end: "2026-09-07"  // Labor Day
+        end: "2026-09-30"
     },
     buyIn: 500,
     lastPlacePenalty: 250,
