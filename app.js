@@ -267,6 +267,8 @@ function renderLeaderboard(flight) {
     // Sort by points, then wins
     teamsWithStandings.sort((a, b) => {
         if (b.pointsFor !== a.pointsFor) return b.pointsFor - a.pointsFor;
+        const headToHead = getHeadToHeadWinner(a.id, b.id);
+        if (headToHead) return headToHead === a.id ? -1 : 1;
         if (b.wins !== a.wins) return b.wins - a.wins;
         return a.losses - b.losses;
     });
@@ -298,6 +300,14 @@ function renderLeaderboard(flight) {
             </tr>
         `;
     }
+}
+
+// Tie breaker #1: head-to-head result between two tied teams
+function getHeadToHeadWinner(teamAId, teamBId) {
+    const match = TOURNAMENT_DATA.matches.find(m =>
+        (m.team1Id === teamAId && m.team2Id === teamBId) || (m.team1Id === teamBId && m.team2Id === teamAId));
+    if (!match || match.team1Points === match.team2Points) return null;
+    return match.team1Points > match.team2Points ? match.team1Id : match.team2Id;
 }
 
 // ==================== Payment ====================
