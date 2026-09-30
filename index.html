@@ -398,6 +398,22 @@
         <p>Regular season complete (April 15 — September 30, 2026) | Playoffs in October</p>
     </footer>
 
+    <script>
+        // Public commit preview: keep score and payment actions on the official site.
+        if (window.location.hostname === 'rawcdn.githack.com') {
+            document.addEventListener('DOMContentLoaded', () => {
+                document.querySelectorAll('[data-view="submit"], [data-view="payment"], [data-view="admin"]').forEach(button => button.remove());
+                const notice = document.createElement('p');
+                notice.className = 'leaderboard-meta';
+                notice.textContent = 'Read-only preview · Submit scores and handle payments on the official site.';
+                document.querySelector('main').prepend(notice);
+                document.querySelector('#score-form').addEventListener('submit', event => {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                }, true);
+            }, { once: true });
+        }
+    </script>
     <script src="data.js?v=10"></script>
     <script src="app.js?v=7"></script>
 </body>
