@@ -21,6 +21,10 @@ document.addEventListener('DOMContentLoaded', () => {
     initScoreForm();
     initSchedule();
     initAdmin();
+    if (SITE_MODE === 'archived') {
+        initArchivedMode();
+        return;
+    }
     syncSharedScores();
     setInterval(syncSharedScores, 60000); // keep open leaderboards reasonably fresh
     
@@ -43,6 +47,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+
+// ==================== Archived Mode ====================
+// Read-only season results. Flip SITE_MODE to 'live' in data.js to restore everything.
+function initArchivedMode() {
+    document.querySelectorAll('[data-view="submit"], [data-view="payment"], [data-view="admin"]').forEach(button => button.remove());
+    document.querySelectorAll('#submit, #payment, #admin').forEach(section => section.remove());
+
+    const notice = document.createElement('p');
+    notice.className = 'leaderboard-meta';
+    notice.textContent = '2026 season archive · Final results';
+    document.querySelector('main').prepend(notice);
+
+    if (typeof ARCHIVED_SCORES !== 'undefined') {
+        TOURNAMENT_DATA.matches = normalizeMatches(ARCHIVED_SCORES.matches);
+        leaderboardLastUpdatedAt = new Date(ARCHIVED_SCORES.snapshotAt);
+    }
+    refreshTournamentViews();
+}
 
 // ==================== Shared Score Database ====================
 async function syncSharedScores(showSuccessToast = false) {

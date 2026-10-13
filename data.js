@@ -3,6 +3,11 @@
 
 const DATA_VERSION = 10;
 
+// Site switch:
+//   'archived' = read-only season results from archive-scores.js (no Google Sheet needed)
+//   'live'     = full functionality: live score sync, Submit Score, Pay Entry, Admin
+const SITE_MODE = 'archived';
+
 const TOURNAMENT_DATA = {
     name: "The Summer Long Hazel",
     season: {
