@@ -43,8 +43,11 @@ function loadSiteScripts(sources) {
         thanks.textContent = 'Thanks for playin’.';
         const later = document.createElement('p');
         later.textContent = 'See ya next year.';
-        page.append(logo, thanks, later);
-        document.body.replaceChildren(page);
+        page.appendChild(logo);
+        page.appendChild(thanks);
+        page.appendChild(later);
+        document.body.textContent = '';
+        document.body.appendChild(page);
         document.body.className = 'farewell-ready';
     }
 

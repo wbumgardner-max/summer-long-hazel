@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function initArchivedMode() {
     document.querySelectorAll('[data-view="submit"], [data-view="payment"], [data-view="admin"]').forEach(button => button.remove());
     document.querySelectorAll('#submit, #payment, #admin').forEach(section => section.remove());
+    if (!document.querySelector('.view.active')) document.querySelector('.nav-btn')?.click();
 
     const notice = document.createElement('p');
     notice.className = 'leaderboard-meta';
