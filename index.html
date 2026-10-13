@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Summer Long Hazel</title>
+    <script src="site-mode.js?v=1"></script>
     <meta name="theme-color" content="#234028">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -400,7 +401,7 @@
 
     <script>
         // Public commit preview: keep score and payment actions on the official site.
-        if (window.location.hostname === 'rawcdn.githack.com') {
+        if (SITE_MODE !== 'off' && window.location.hostname === 'rawcdn.githack.com') {
             document.addEventListener('DOMContentLoaded', () => {
                 document.querySelectorAll('[data-view="submit"], [data-view="payment"], [data-view="admin"]').forEach(button => button.remove());
                 const notice = document.createElement('p');
@@ -414,8 +415,6 @@
             }, { once: true });
         }
     </script>
-    <script src="data.js?v=11"></script>
-    <script src="archive-scores.js?v=1"></script>
-    <script src="app.js?v=9"></script>
+    <script>loadSiteScripts(['data.js?v=12', 'archive-scores.js?v=1', 'app.js?v=10']);</script>
 </body>
 </html>

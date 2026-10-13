@@ -15,6 +15,8 @@ const FLIGHT_LABELS = {
 const COURSE_LABEL = 'CGC';
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Fail closed if this script ever loads without the site switch (e.g. a stale cached page).
+    if (typeof SITE_MODE === 'undefined' || SITE_MODE === 'off') return;
     initNavigation();
     initLeaderboard();
     initPayment();
@@ -49,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ==================== Archived Mode ====================
-// Read-only season results. Flip SITE_MODE to 'live' in data.js to restore everything.
+// Read-only season results. Set SITE_MODE to 'live' in site-mode.js to restore everything.
 function initArchivedMode() {
     document.querySelectorAll('[data-view="submit"], [data-view="payment"], [data-view="admin"]').forEach(button => button.remove());
     document.querySelectorAll('#submit, #payment, #admin').forEach(section => section.remove());
